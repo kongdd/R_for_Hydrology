@@ -1,0 +1,100 @@
+## 使用latticeMap绘制地图 {#latticeMap-02}
+
+latticeMap `layer_*`系列函数与ggplot中的`geom_*`类函数使用方法类似。目前已经完成的函数包括`layer_title`, `layer_latFreq`, `layer_barchart`, `layer_contourf`, `layer_statistic`。
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+    echo = TRUE,
+    fig.width = 10,
+    fig.height = 5,
+    # dev='svg',
+    cache = TRUE
+    # root.dir = '../../..'
+)
+library(Ipaper)
+Ipaper::set_font()
+```
+
+```{r, message=FALSE}
+library(rgdal)
+library(sf)
+library(latticeMap)
+library(rcolors)
+```
+
+1. 读取数据
+$Aridity = Prcp/Pet$
+
+```{r}
+print(getwd())
+# Aridity index
+g <- readGDAL("data-raw/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif")
+# continent boundary
+file_continent <- "data-raw/shp/continent.shp"
+get_continent <- function() {
+    read_sf(file_continent) %>% as_Spatial()
+}
+sp_cont <- list("sp.lines", get_continent(), lwd = 0.5, first = F)
+sp_layout = list(sp_cont)
+```
+
+2. 设置颜色和brks
+```{r}
+brks = c(-Inf, 0, 0.05, 0.2, 0.5, 0.65, 1, 2, 5, 10, Inf)
+# brks2 = c(0.05, 0.2, 0.5, 0.65, 1, 2, 5)
+# sub- humid (0.65 > AI ≥ 0.5), semi- arid (0.5 > AI ≥ 0.2),
+# arid (0.2 > AI ≥ 0.05) and hyper- arid (AI < 0.05) regions
+nbrk = length(brks) - 1
+n_more = 2
+cols <- get_color(rcolors$amwg256, nbrk+n_more) %>% .[-(1:n_more)] %>% rev()
+```
+
+```{r}
+p <- sp_plot(g, brks = brks, colors = cols,
+             xlim = c(-180, 240),
+             ylim = c(-60, 90),
+             aspect = 0.5,
+             sp.layout = sp_layout,
+             key.num2factor = TRUE)
+p
+# write_fig(p, "a.pdf")
+```
+## 添加标题
+```{r}
+p + layer_title(x = 0, y = 1, labels = c("(a) AI")) 
+```
+
+## 添加随纬度波动图
+```{r}
+p + layer_title(x = 0, y = 1, labels = c("(a) AI")) + 
+    layer_latFreq(bbox = c(185, 240, -60, 90), zlim = c(-2, 2),
+                  unit = "native", is_spatial =TRUE)
+```
+
+## 添加频率分布直方图
+```{r}
+p + layer_title(x = 0, y = 1, labels = c("(a) AI")) + 
+    layer_latFreq(bbox = c(185, 240, -60, 90), zlim = c(-2, 2),
+                  unit = "native", is_spatial =TRUE) +
+    layer_barchart(x = 0.01, y = 0.05, width = 0.22)
+```
+
+## 添加contour
+```{r}
+brks2 = c(0.05, 0.2, 0.65, 1)
+p + layer_title(x = 0, y = 1, labels = c("(a) AI")) + 
+    layer_latFreq(bbox = c(185, 240, -60, 90), zlim = c(-2, 2),
+                  unit = "native", is_spatial =TRUE) +
+    layer_barchart(x = 0.01, y = 0.05, width = 0.22) +
+    layer_contourf(brks = brks2)
+```
+
+## 添加均值±方差统计
+```{r}
+p + layer_title(x = 0, y = 1, labels = c("(a) AI")) + 
+    layer_latFreq(bbox = c(185, 240, -60, 90), zlim = c(-2, 2),
+                  unit = "native", is_spatial =TRUE) +
+    layer_barchart(x = 0.01, y = 0.05, width = 0.22) +
+    layer_contourf(brks = brks2) +
+    layer_statistic(x = 0.4, y = 0.1, cex = 1.4)
+```

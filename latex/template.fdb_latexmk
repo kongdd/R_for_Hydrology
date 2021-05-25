@@ -1,0 +1,12 @@
+# Fdb version 3
+["pdflatex"] 1621941308 "f:/CUG-Hydro/R_for_Hydrology/latex/template.tex" "template.pdf" "template" 1621941308
+  "$documentclass$.cls" 0 -1 0 ""
+  "c:/Users/kongdd/AppData/Roaming/TinyTeX/texmf-dist/web2c/texmf.cnf" 1621938404 40042 fe981136cbb5f3715ab1b0e46e3d3892 ""
+  "c:/Users/kongdd/AppData/Roaming/TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1621938404 1345580 e37ca601dfb4755d3b635916295ab2ba ""
+  "c:/Users/kongdd/AppData/Roaming/TinyTeX/texmf.cnf" 1621938640 954 e4ac614787c9b8b91236ea427cb1426e ""
+  "f:/CUG-Hydro/R_for_Hydrology/latex/template.tex" 1621923851 7453 5ca310e0602a3a105422ec5ec11372ee ""
+  "template.aux" 1621941308 34 3985256e7290058c681f74d7a3565a19 ""
+  "template.tex" 1621923851 7453 5ca310e0602a3a105422ec5ec11372ee ""
+  (generated)
+  "template.log"
+  "template.pdf"

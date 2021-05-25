@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+_book
+_bookdown_files
+
+R_for_Hydrology_files
+R_for_Hydrology_cache
+R_for_Hydrology*

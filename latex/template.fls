@@ -1,0 +1,6 @@
+PWD f:/CUG-Hydro/R_for_Hydrology/latex
+INPUT c:/Users/kongdd/AppData/Roaming/TinyTeX/texmf.cnf
+INPUT c:/Users/kongdd/AppData/Roaming/TinyTeX/texmf-dist/web2c/texmf.cnf
+INPUT c:/Users/kongdd/AppData/Roaming/TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt
+INPUT f:/CUG-Hydro/R_for_Hydrology/latex/template.tex
+OUTPUT template.log

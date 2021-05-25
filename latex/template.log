@@ -1,0 +1,33 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2021.5.24)  25 MAY 2021 19:15
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**f:/CUG-Hydro/R_for_Hydrology/latex/template.tex
+(f:/CUG-Hydro/R_for_Hydrology/latex/template.tex
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-05-11>
+
+! LaTeX Error: File `$documentclass$.cls' not found.
+
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: cls)
+
+Enter file name: 
+f:/CUG-Hydro/R_for_Hydrology/latex/template.tex:2: Emergency stop.
+<read *> 
+         
+l.2 $
+     if(beamerarticle)$^^M
+*** (cannot \read from terminal in nonstop modes)
+
+ 
+Here is how much of TeX's memory you used:
+ 24 strings out of 480796
+ 624 string characters out of 5902997
+ 282400 words of memory out of 5000000
+ 17512 multiletter control sequences out of 15000+600000
+ 403430 words of font info for 27 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 19i,0n,27p,258b,13s stack positions out of 5000i,500n,10000p,1000000b,80000s
+f:/CUG-Hydro/R_for_Hydrology/latex/template.tex:2:  ==> Fatal error occurred, no output PDF file produced!
