@@ -8,3 +8,6 @@ _bookdown_files
 R_for_Hydrology_files
 R_for_Hydrology_cache
 R_for_Hydrology*
+
+*.pdf
+dem_pearl.tif

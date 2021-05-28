@@ -1,0 +1,41 @@
+## 趋势及显著性水平 {#latticeMap-trend}
+
+此处使用的是GLEAM ET数据。
+
+首先计算线性趋势和pvalue。
+
+
+```{r}
+# Aridity index
+g <- readGDAL("data-raw/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif")
+# continent boundary
+file_continent <- "data-raw/shp/continent.shp"
+get_continent <- function() {
+    read_sf(file_continent) %>% as_Spatial()
+}
+sp_cont <- list("sp.lines", get_continent(), lwd = 0.5, first = F)
+sp_layout = list(sp_cont)
+```
+
+2. 设置颜色和brks
+```{r}
+brks = c(-Inf, 0, 0.05, 0.2, 0.5, 0.65, 1, 2, 5, 10, Inf)
+# brks2 = c(0.05, 0.2, 0.5, 0.65, 1, 2, 5)
+# sub- humid (0.65 > AI ≥ 0.5), semi- arid (0.5 > AI ≥ 0.2),
+# arid (0.2 > AI ≥ 0.05) and hyper- arid (AI < 0.05) regions
+nbrk = length(brks) - 1
+n_more = 2
+cols <- get_color(rcolors$amwg256, nbrk+n_more) %>% .[-(1:n_more)] %>% rev()
+```
+
+```{r}
+p <- sp_plot(g, brks = brks, colors = cols,
+             xlim = c(-180, 240),
+             ylim = c(-60, 90),
+             aspect = 0.5,
+             sp.layout = sp_layout,
+             key.num2factor = TRUE)
+p
+```
+
+

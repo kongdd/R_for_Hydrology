@@ -1,0 +1,58 @@
+
+# CMIP5或CMIP6数据处理 {#sp_cmip6}
+
+```{r}
+library(CMIP6tools) # v0.1.5.9000
+# Dongdong Kong, 2020-01-09
+## evspsbl, Evaporation
+
+dir_data <- "E:/CMIP6_data"
+dir_runner <- paste0(dir_data, "/runner") # 请核对自己的runner路径
+aria2c_path <- paste0(dir_runner, "/aria2c.bat")
+ESGF_user <- "kongdd" # your openid username, e.g. how_ll, fengshy
+
+set_aria2c(aria2c_path)
+Sys.setenv(ESGF_HOME = paste0(dirname(aria2c_path), "/.auth/", ESGF_user))
+
+# evspsblveg: Evaporation from Canopy, the canopy evaporation+sublimation (if present in model)
+# evspsblsoi: Water Evaporation from Soil, includes sublimation
+# tran: transpiration
+#
+# evspsbl and tran
+options_et <- list(
+    variables = c("evspsbl", "tran", "evspsblveg", "evspsblsoi"),
+    # variables = c("hfls", "hfss", "hurs", "hurs2", "pr", "rlds", "sfcWind", "tas", "tasmax", "tasmin")[-4]
+    frequency = "mon", # day, mon 仅限两种可选
+    scenarios = c("hist-GHG", "hist-nat", "hist-aer", "historical"),
+    cmip = "cmip6"
+)
+
+# options_tasmax <- list(
+#     variables   = "tasmax",
+#     # variables = c("hfls", "hfss", "hurs", "hurs2", "pr", "rlds", "sfcWind", "tas", "tasmax", "tasmin")[-4]
+#     frequency   = "day", # day, mon 仅限两种可选
+#     scenarios   = "ssp245",
+#     cmip        = "cmip6"
+# )
+
+## main ------------------------------------------------------------
+urls_fetch(dir_data, options_et, overwrite_sh = FALSE, overwrite_txt = FALSE, nchar_ensemble = 6)
+links <- retrieve_links(dir_data, options_et)
+# check_download(dir_data, options_et)
+# runner(dir_data, options_et, x = 4, j = 4)
+```
+不同情景model的个数，cmip6历史情景一般模拟到2014或2020年。
+
+```{r}
+library(purrr)
+library(dplyr)
+info = links$evspsblsoi %>%
+    map(~CMIP5Files_summary(.) %>% mutate(is_long = year_end == 2020))
+```
+
+如果一个model有多个ensemble，则取r1i1p1f1_gn
+
+```{r}
+# d %>% group_by(model) %>%   
+```
+

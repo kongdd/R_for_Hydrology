@@ -1,11 +1,6 @@
----
-output:
-  pdf_document: default
-  html_document: default
----
-# 使用latticeMap绘制地图 {#latticeMap-01}
+# (PART) 绘图篇 {-}
 
-latticeMap `layer_*`系列函数与ggplot中的`geom_*`类函数使用方法类似。目前已经完成的函数包括`layer_title`, `layer_latFreq`, `layer_barchart`, `layer_contourf`, `layer_statistic`。
+# latticeMap {#latticeMap}
 
 ```{r, include=FALSE}
 knitr::opts_chunk$set(
@@ -20,6 +15,22 @@ library(Ipaper)
 Ipaper::set_font()
 ```
 
+## 安装
+
+该包尚未在CRAN发布，需要通过github安装。
+```{r, eval=FALSE}
+remotes::install_github("rpkgs/latticeMap")
+```
+
+## `layer_*` {#lattice-layer_}
+latticeMap `layer_*`系列函数与ggplot中的`geom_*`类函数使用方法类似。目前已经完成的函数包括`layer_title`, `layer_latFreq`, `layer_barchart`, `layer_contourf`, `layer_statistic`。
+
+latticeMap绘图主要针对栅格数据，以`SpatialGridDataFrame`和`SpatialPixelsDataFrame`
+这两种数据为主，详情可以翻阅R包`sp`。
+
+以干旱指数（$Aridity = P/PET$）为例，下文将会演示如何利用latticeMap定制一幅美观的地图。
+
+首先加载包：
 ```{r, message=FALSE}
 library(rgdal)
 library(sf)
@@ -28,12 +39,8 @@ library(rcolors)
 ```
 
 1. 读取数据
-$Aridity = Prcp/Pet$
-
 ```{r}
-print(getwd())
-# Aridity index
-g <- readGDAL("data-raw/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif")
+g <- readGDAL("data-raw/AridityIndex_MSWEP-prcp_div_GLEAM-Ep_1980-2020.tif") # Aridity index
 # continent boundary
 file_continent <- "data-raw/shp/continent.shp"
 get_continent <- function() {
@@ -62,21 +69,20 @@ p <- sp_plot(g, brks = brks, colors = cols,
              sp.layout = sp_layout,
              key.num2factor = TRUE)
 p
-# write_fig(p, "a.pdf")
 ```
-## 添加标题
+## layer_title添加标题
 ```{r}
 p + layer_title(x = 0, y = 1, labels = c("(a) AI")) 
 ```
 
-## 添加随纬度波动图
+## layer_latFreq添加随纬度波动图
 ```{r}
 p + layer_title(x = 0, y = 1, labels = c("(a) AI")) + 
     layer_latFreq(bbox = c(185, 240, -60, 90), zlim = c(-2, 2),
                   unit = "native", is_spatial =TRUE)
 ```
 
-## 添加频率分布直方图
+## layer_barchart添加频率分布直方图 
 ```{r}
 p + layer_title(x = 0, y = 1, labels = c("(a) AI")) + 
     layer_latFreq(bbox = c(185, 240, -60, 90), zlim = c(-2, 2),
@@ -84,7 +90,7 @@ p + layer_title(x = 0, y = 1, labels = c("(a) AI")) +
     layer_barchart(x = 0.01, y = 0.05, width = 0.22)
 ```
 
-## 添加contour
+## layer_contourf添加contour
 ```{r}
 brks2 = c(0.05, 0.2, 0.65, 1)
 p + layer_title(x = 0, y = 1, labels = c("(a) AI")) + 
@@ -94,7 +100,7 @@ p + layer_title(x = 0, y = 1, labels = c("(a) AI")) +
     layer_contourf(brks = brks2)
 ```
 
-## 添加均值±方差统计
+## layer_statistic添加均值±方差统计
 ```{r}
 p + layer_title(x = 0, y = 1, labels = c("(a) AI")) + 
     layer_latFreq(bbox = c(185, 240, -60, 90), zlim = c(-2, 2),

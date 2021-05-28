@@ -20,8 +20,6 @@
   - Rmarkdown源代码
   - 分析结果(生成的pdf或者html文件)
   - 注明学号和姓名
-  
-
 
 ## 数据集
 
@@ -37,6 +35,3 @@
 - <http://www.ciejournal.org/> (中国工业经济)
 - <http://www.stats.gov.cn/tjsj/ndsj/> (中国统计年鉴)
 - <https://www.oecd.org/pisa/> 国际学生评估项目 (PISA)
-
-
-

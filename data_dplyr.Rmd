@@ -1,0 +1,35 @@
+# dplyr {#ch-data-dplyr}
+
+dplyr取代传统的plyr，最大的痛点在于dplyr复现plyr::ddply函数功能较为麻烦。
+
+虽然，`do`函数可以实现ddply的功能，但`do`即将退休。
+
+```{r}
+library(dplyr)
+
+# some complex function
+func <- function(x) {
+    mod <- lm(Sepal.Length ~ Petal.Width, data = x)
+    mod_coefs <- broom::tidy(mod)
+
+    tibble(
+        mean_sepal_length = mean(x$Sepal.Length),
+        mean_petal_width = mean(x$Petal.Width),
+        slope = mod_coefs[[2, 2]],
+        slope_p = mod_coefs[[2, 5]]
+    )
+}
+
+# plyr version
+plyr::ddply(iris, "Species", func)
+
+# dplyr with do()
+iris %>%
+    group_by(Species) %>%
+    do(func(.))
+```
+
+## references
+
+https://stackoverflow.com/questions/54774280/plyrddply-equivalent-in-dplyr
+https://www.statology.org/select-first-row-in-group-dplyr/

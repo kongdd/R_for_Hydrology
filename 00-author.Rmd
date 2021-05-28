@@ -38,3 +38,4 @@ Google scholar: <https://scholar.google.com/citations?user=B5OpmAoAAAAJ>
 [8] Xiao, M., Yu, Z., **Kong, D.**, Gu, X., Mammarella, I., Montagnani, L., ... & Buchmann, N. (2020). Stomatal response to decreased relative humidity constrains the acceleration of terrestrial evapotranspiration. \***Environmental Research Letters\***. <https://doi.org/10.1088/1748-9326/ab9967>
 
 [9] Lai, Y., Li, J., Gu, X., Chen, Y. D., **Kong, D.**, Gan, T. Y., ... & Wu, G. (2020). Greater flood risks in response to slowdown of tropical cyclones over the coast of China. \***Proceedings of the National Academy of Sciences\***, 117(26), 14751-14755.（**TOP sci,** **IF=9.412**）
+

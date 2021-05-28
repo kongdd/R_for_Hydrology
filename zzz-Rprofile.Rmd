@@ -1,0 +1,45 @@
+# R语言启动设置 {#Rprofile}
+
+每次启动带上百宝箱上路，开启R语言编程之旅。
+
+其中`r["CRAN"]`设置镜像地址，提高R包下载速度。其余代码主要是加载一些常用的包。
+
+```{r, eval=FALSE}
+# .libPaths(c("/home/kong/R/x86_64-pc-linux-gnu-library/3.6"))
+.libPaths(c("D:/Documents/R/win-library/4.1"))
+# Sys.setlocale(category = "LC_ALL", locale = "English_United States.1252")
+
+# set a CRAN mirror
+local({r <- getOption("repos")
+    # r["CRAN"] <- "https://mirrors.tuna.tsinghua.edu.cn/CRAN/"
+    r["CRAN"] <- "https://mirrors.aliyun.com/CRAN/"
+    options(repos = r)})
+
+# Give a fortune cookie, but only to interactive sessions
+# (This would need the fortunes package to be installed.)
+#  if (interactive())
+#    fortunes::fortune()
+suppressMessages({
+    tryCatch({
+        # library(latticeGrob)
+        library(Ipaper)
+        Ipaper::set_font()
+
+        library(magrittr)
+        library(devtools)
+        library(data.table)
+        # # library(raster)
+        # # library(ncdf4)
+        library(dplyr)
+        library(sf)
+        # library(sf2)
+        # library(nctools)
+        library(purrr)
+    }, error = function(e){
+        message(sprintf("[e] %s", e$message))
+    })
+})
+# .python = "c:/ProgramData/Anaconda3/python.exe"
+# .python = "c:/Users/kongdd/.conda/envs/qgis/python"
+# Sys.setenv(RETICULATE_PYTHON = .python)
+```

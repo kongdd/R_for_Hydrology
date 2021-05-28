@@ -1,0 +1,57 @@
+## layer_grob (deprecated)
+
+今天为大家介绍，如何采用`panel.annotation`制作下图格式的专业地图，抛砖引玉，以飨读者。
+
+该图使用的是R包latticeMap中的levelplot2绘制。
+
+作为lattice的用户，想必你对如下形式的panel函数非常熟悉：
+``` r
+panel <- function(x, y, z, subscripts, ..., sp.layout) {
+  ...
+}
+```
+lattice中以panel函数控制着每个面板中的绘图内容。通过修改panel函数，我们可以批量、便捷地做出专业、复杂的地图。
+
+latticeMap中设计了`panel.annotation`函数，便捷地为子图添加插件。`panel.annotation`主要是将grob对象绘制到viewpoint的指定位置。调用方法如下：
+``` r
+panel.annotation(
+  grob,
+  bbox = c(xmin, xmax, ymin, ymax),
+  unit = "npc",
+  xscale = FALSE,
+  yscale = FALSE,
+  clip = "on",
+  ...
+)
+```
+主要参数：
+
+- `grob`: grob object   
+- `bbox`: The region to plot grob, [xmin, xmax, ymin, ymax].   
+- `unit`  : A character vector specifying the units for the corresponding numeric values.   
+- `xscale`: A numeric vector of length two indicating the minimum and maximum on the x-scale. The limits may not be identical.   
+- `yscale`: A numeric vector of length two indicating the minimum and maximum on the y-scale. The limits may not be identical.   
+- `clip`  : One of "on", "inherit", or "off", indicating whether to clip to the extent of this viewport, inherit the clipping region from the parent viewport, or turn clipping off altogether. For back-compatibility, a logical value of TRUE corresponds to "on" and FALSE corresponds to "inherit".
+
+现在已完成的基于`panel.annotation`的函数，也是上图中用到的panel：
+
+  - `panel.barchartFreq`: 左下角的直方图
+  - `panel.horizontalFreq`: 右侧的随纬度波动的子图。
+
+借助R包ggplotify，R语言任何绘图内容均可转化为grob对象，因此`panel.annotation`的功能绝不仅限于此，借助`panel.annotation`可以很容易扩展其他绘图功能饼状图、箱线图、散点图等。用户脑洞多大，就能做出多漂亮的图。
+
+以`panel.barchartFreq`为例，该函数的编写思路如下：
+
+  1. 先将左下角的直方图通过lattice::panel.barchart绘制出来   
+  2. 将绘图内容转为grob对象  
+  3. 采用panel.annotation将grob对象绘制在指定位置  
+  4. 将上述过程封装成panel函数，以便批量制图。  
+
+<!-- levelplot2使用panel.spatial扩展了绘制专业地图的功能。 -->
+<!-- panel.spatial中的地图插件，大多是基于`panel.annotation`绘制的，如: -->
+<!-- ，然后借用`panel.annotation`即可把grob对象绘制在panel中指定的位置。 -->
+
+闲话莫提，直接上代码：
+
+经过前人的努力，绘制一幅专业的地图仅需20行代码左右，远比ArcGIS方便，值得你去学习。
+latticeMap处于频繁维护期，尚未发布稳定版。想要尝鲜的用户，需要关注微信号，回复latticeMap。
