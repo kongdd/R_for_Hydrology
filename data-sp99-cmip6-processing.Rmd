@@ -1,15 +1,18 @@
 
 # CMIP5或CMIP6数据处理 {#sp_cmip6}
 
+## 数据下载
+
+R包`CMIP6tools`集成了一套完整的CMIP6/5数据下载，和数据处理的函数。
+
 ```{r}
-library(CMIP6tools) # v0.1.5.9000
+library(CMIP6tools) # v0.1.5.9001
 # Dongdong Kong, 2020-01-09
 ## evspsbl, Evaporation
 
-dir_data <- "E:/CMIP6_data"
-dir_runner <- paste0(dir_data, "/runner") # 请核对自己的runner路径
-aria2c_path <- paste0(dir_runner, "/aria2c.bat")
-ESGF_user <- "kongdd" # your openid username, e.g. how_ll, fengshy
+dir_runner  <- "E:/CMIP6_data/runner" # 请核对自己的runner路径
+aria2c_path <- paste0(dir_runner, "/aria2c.bat") 
+ESGF_user   <- "kongdd"  # your openid username, e.g. how_ll, fengshy
 
 set_aria2c(aria2c_path)
 Sys.setenv(ESGF_HOME = paste0(dirname(aria2c_path), "/.auth/", ESGF_user))
@@ -17,42 +20,76 @@ Sys.setenv(ESGF_HOME = paste0(dirname(aria2c_path), "/.auth/", ESGF_user))
 # evspsblveg: Evaporation from Canopy, the canopy evaporation+sublimation (if present in model)
 # evspsblsoi: Water Evaporation from Soil, includes sublimation
 # tran: transpiration
-#
 # evspsbl and tran
 options_et <- list(
     variables = c("evspsbl", "tran", "evspsblveg", "evspsblsoi"),
     # variables = c("hfls", "hfss", "hurs", "hurs2", "pr", "rlds", "sfcWind", "tas", "tasmax", "tasmin")[-4]
     frequency = "mon", # day, mon 仅限两种可选
     scenarios = c("hist-GHG", "hist-nat", "hist-aer", "historical"),
-    cmip = "cmip6"
+    cmip = "cmip6",          # cmip5 or cmip6
+    OUTPUT = "E:/CMIP6_data" # 数据存储路径，确保有充足的存储空间，cmip6 daily单变量2T左右
 )
 
-# options_tasmax <- list(
-#     variables   = "tasmax",
-#     # variables = c("hfls", "hfss", "hurs", "hurs2", "pr", "rlds", "sfcWind", "tas", "tasmax", "tasmin")[-4]
-#     frequency   = "day", # day, mon 仅限两种可选
-#     scenarios   = "ssp245",
-#     cmip        = "cmip6"
-# )
+options_tas <- list(
+    variables   = c("tasmax", "tasmin"),
+    # variables = c("hfls", "hfss", "hurs", "hurs2", "pr", "rlds", "sfcWind", "tas", "tasmax", "tasmin")[-4]
+    frequency   = "day", # day, mon 仅限两种可选
+    scenarios   = NULL,
+    cmip        = "cmip6",
+    OUTPUT      = "J:/CMIP6_data"
+)
+
+options_hus <- list(
+    variables   = c("hurs", "huss"),
+    # variables = c("hfls", "hfss", "hurs", "hurs2", "pr", "rlds", "sfcWind", "tas", "tasmax", "tasmin")[-4]
+    frequency   = "day", # day, mon 仅限两种可选
+    scenarios   = NULL,
+    cmip        = "cmip6",
+    OUTPUT      = "G:/CMIP6_data"
+)
 
 ## main ------------------------------------------------------------
-urls_fetch(dir_data, options_et, overwrite_sh = FALSE, overwrite_txt = FALSE, nchar_ensemble = 6)
-links <- retrieve_links(dir_data, options_et)
-# check_download(dir_data, options_et)
-# runner(dir_data, options_et, x = 4, j = 4)
+# options  <- options_tas
+options <- options_hus
+options$OUTPUT %<>% Ipaper::path.mnt() # automatically change to wsl path
+
+# `ensemble_pattern`控制选取的realizations
+urls_fetch(options, overwrite_sh = FALSE, overwrite_txt = FALSE, ensemble_pattern = "r1i1p1f1")
+links_all <- retrieve_links(options)  # all links
+links_left <- check_download(options) # undownload links
+# runner(options_et, x = 4, j = 4)      # uncomment this line to download data
 ```
-不同情景model的个数，cmip6历史情景一般模拟到2014或2020年。
+
+> cmip6历史情景一般模拟到2014或2020年。此外，需要注意不同情景model的个数可能不同。
+
+## 数据处理
 
 ```{r}
-library(purrr)
-library(dplyr)
-info = links$evspsblsoi %>%
-    map(~CMIP5Files_summary(.) %>% mutate(is_long = year_end == 2020))
+l_files <- get_files(links_all, options) # convert url links to file path
 ```
 
-如果一个model有多个ensemble，则取r1i1p1f1_gn
+作为示例，这里仅对hurs进行处理。
+```{r}
+# only hurs used here
+# 详情请查看`CMIP5Files_info`的说明文档
+info <- purrr::map(l_files$hurs, CMIP5Files_info)
+str(info, 2)
+```
+
+返回的`info`与`l_files$hurs`等长，为10个情景（scenario）。取`historical`作为示例:
+
+```{r}
+d = info$historical
+print(d)
+# 把相同的model划分到一起
+l <- split(d[, -2], d$model)
+# file为文件路径，接下来对每个model采用cdo进行预处理
+# 取出其中一个model的数据
+l$`ACCESS-CM2`
+```
+
+### cdo 数据预处理
 
 ```{r}
 # d %>% group_by(model) %>%   
 ```
-
